@@ -49,6 +49,8 @@ typedef UIViewController*(^DMLazyScrollViewDataSource)(NSUInteger index);
 @property (nonatomic, assign) BOOL autoPlay;
 @property (nonatomic, assign) CGFloat autoPlayTime; //default 3 seconds
 
+@property (nonatomic, assign) NSUInteger assignOfPages;//初始化时加载指定页
+
 - (id)initWithFrameAndDirection:(CGRect)frame
                       direction:(DMLazyScrollViewDirection)direction
                  circularScroll:(BOOL) circularScrolling;

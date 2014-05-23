@@ -156,8 +156,15 @@ enum {
             self.contentSize = CGSizeMake(self.frame.size.width,
                                           self.frame.size.height * offset);
         }
-        [self reloadData];
+//        [self reloadData];
     }
+}
+
+//add by lic
+- (void)setAssignOfPages:(NSUInteger)assignOfPages
+{
+    [self setCurrentViewController:assignOfPages];
+    [self resetAutoPlay];
 }
 
 - (void) reloadData {

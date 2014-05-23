@@ -15,6 +15,7 @@
 @interface DMViewController () <DMLazyScrollViewDelegate> {
     DMLazyScrollView* lazyScrollView;
     NSMutableArray*    viewControllerArray;
+    NSMutableArray *viewArrs;
 }
 @end
 
@@ -22,6 +23,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    viewArrs = [[NSMutableArray alloc] init];
+    
+    for (int i = 0; i < 10; i ++) {
+        UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(10, 10, 300, 300)];
+        view1.backgroundColor = [UIColor whiteColor];
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 100, 40)];
+        label.text = [NSString stringWithFormat:@"%d",i];
+        [view1 addSubview:label];
+        [viewArrs addObject:view1];
+    }
     
     // PREPARE PAGES
     NSUInteger numberOfPages = 10;
@@ -33,14 +44,15 @@
     // PREPARE LAZY VIEW
     CGRect rect = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-50);
     lazyScrollView = [[DMLazyScrollView alloc] initWithFrame:rect];
-    [lazyScrollView setEnableCircularScroll:YES];
-    [lazyScrollView setAutoPlay:YES];
+    [lazyScrollView setEnableCircularScroll:YES];//设置循环滚动
+    [lazyScrollView setAutoPlay:YES];//设置自动滚动
     
     __weak __typeof(&*self)weakSelf = self;
     lazyScrollView.dataSource = ^(NSUInteger index) {
         return [weakSelf controllerAtIndex:index];
     };
     lazyScrollView.numberOfPages = numberOfPages;
+    lazyScrollView.assignOfPages = 6;//从指定页开始加载页面
    // lazyScrollView.controlDelegate = self;
     [self.view addSubview:lazyScrollView];
     
@@ -90,7 +102,10 @@
         label.text = [NSString stringWithFormat:@"%d",index];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont boldSystemFontOfSize:50];
-        [contr.view addSubview:label];
+//        [contr.view addSubview:label];
+        UIView *pv = [viewArrs objectAtIndex:index];
+        [pv addSubview:label];
+        [contr.view addSubview:pv];
         
         [viewControllerArray replaceObjectAtIndex:index withObject:contr];
         return contr;

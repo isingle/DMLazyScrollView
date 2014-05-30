@@ -16,6 +16,7 @@
     DMLazyScrollView* lazyScrollView;
     NSMutableArray*    viewControllerArray;
     NSMutableArray *viewArrs;
+    NSUInteger numberOfPages;
 }
 @end
 
@@ -35,7 +36,7 @@
     }
     
     // PREPARE PAGES
-    NSUInteger numberOfPages = 10;
+    numberOfPages = 10;
     viewControllerArray = [[NSMutableArray alloc] initWithCapacity:numberOfPages];
     for (NSUInteger k = 0; k < numberOfPages; ++k) {
         [viewControllerArray addObject:[NSNull null]];
@@ -52,8 +53,8 @@
         return [weakSelf controllerAtIndex:index];
     };
     lazyScrollView.numberOfPages = numberOfPages;
-    lazyScrollView.assignOfPages = 6;//从指定页开始加载页面
-   // lazyScrollView.controlDelegate = self;
+    lazyScrollView.assignOfPages = 0;//从指定页开始加载页面
+    lazyScrollView.controlDelegate = self;
     [self.view addSubview:lazyScrollView];
     
     // MOVE BY 3 FORWARD
@@ -113,6 +114,27 @@
     return res;
 }
 
+- (void)lazyScrollView:(DMLazyScrollView *)pagingView currentPageChanged:(NSInteger)currentPageIndex
+{
+    //优化内存，始终保存三页vc
+    NSLog(@"viewarray===%@",viewControllerArray);
+    for (NSInteger i = 0; i < numberOfPages; i++) {
+        if (i == currentPageIndex || i == currentPageIndex+1 || i == currentPageIndex-1) {
+            continue;
+        }
+        id res = [viewControllerArray objectAtIndex:i];
+        if (res != [NSNull null]) {
+            UIViewController *vc = (UIViewController *)res;
+            [vc.view  removeFromSuperview];
+            res = nil;
+            [viewControllerArray replaceObjectAtIndex:i withObject:[NSNull null]];
+            
+        }
+    }
+    NSLog(@"viewarray===%@",viewControllerArray);
+    
+    //end
+}
 /*
 - (void)lazyScrollViewDidEndDragging:(DMLazyScrollView *)pagingView {
     NSLog(@"Now visible: %@",lazyScrollView.visibleViewController);

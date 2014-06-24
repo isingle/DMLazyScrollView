@@ -126,7 +126,7 @@
         if (res != [NSNull null]) {
             UIViewController *vc = (UIViewController *)res;
             [vc.view  removeFromSuperview];
-            res = nil;
+            vc = nil;
             [viewControllerArray replaceObjectAtIndex:i withObject:[NSNull null]];
             
         }
